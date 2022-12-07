@@ -37,7 +37,7 @@ dependencies {
     //Scanner SDK
     implementation 'tw.com.lig:scanner:3.1.0'
     //AR SDK
-    implementation 'tw.com.lig:player:0.9.2'
+    implementation 'tw.com.lig:player:0.9.5'
 
     implementation "com.gorisse.thomas.sceneform:sceneform:1.20.5"
     implementation "com.github.bumptech.glide:glide:4.11.0"

@@ -66,9 +66,10 @@ class ARSceneformController(
         if (!isStarted || isDestroyed)
             return
 
-        LiGPlayer.context.unload()
         isStarted = false
         sceneView.pause()
+
+        LiGPlayer.context.unload()
     }
 
     fun destroy() {
@@ -82,31 +83,42 @@ class ARSceneformController(
         if (sceneView.session == null || sceneView.arFrame == null)
             return
 
+        if (modelPlaced) {
+            sceneView.scene?.camera?.let { LiGPlayer.context.visibilityCheckWith(it.worldPosition) }
+        }
+
         if (!modelPlaced && sceneView.arFrame?.camera?.trackingState == TrackingState.TRACKING) {
             modelPlaced = true
 
-            val cameraPose = Transform()
-            sceneView.arFrame?.camera?.displayOrientedPose?.toMatrix(cameraPose.data, 0)
-            val transform = lightId.transform(cameraPose)
+            playerInit()
+        }
+    }
 
-            LiGCoordinateSystem.getLightTagTransform(lightId.deviceId, Matrix(transform.data)) { position, rotation ->
-                MainScope().launch {
-                    val anchor = LiGPlayer.context.origin
-                    anchor.worldPosition = position
-                    anchor.worldRotation = rotation
-                    sceneView.scene.addChild(anchor)
-                }
+    private fun playerInit() {
+        val cameraPose = Transform()
+        sceneView.arFrame?.camera?.displayOrientedPose?.toMatrix(cameraPose.data, 0)
+        val transform = lightId.transform(cameraPose)
+
+        LiGCoordinateSystem.getLightTagTransform(
+            lightId.deviceId,
+            Matrix(transform.data)
+        ) { position, rotation ->
+            MainScope().launch {
+                val anchor = LiGPlayer.context.origin
+                anchor.worldPosition = position
+                anchor.worldRotation = rotation
+                sceneView.scene.addChild(anchor)
             }
+        }
 
-            val accessToken = LiGScanner.getAccessToken()
-            LiGScene.readFromCloud(lightId.deviceId, accessToken) { payload ->
+        val accessToken = LiGScanner.getAccessToken()
+        LiGScene.readFromCloud(lightId.deviceId, accessToken) { payload ->
+            MainScope().launch {
                 LiGPlayer.context.ligScene =
                     payload.scenes.first().arObjects?.map { arObject -> ArObjectModel(arObject) }
-                        ?.let { it1 -> LiGScene(activity, it1) }
+                        ?.let { it1 -> LiGScene(it1) }
 
-                scope.launch {
-                    LiGPlayer.context.load()
-                }
+                LiGPlayer.context.load(activity)
             }
         }
     }
