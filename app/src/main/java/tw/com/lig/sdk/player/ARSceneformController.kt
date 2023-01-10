@@ -38,7 +38,7 @@ class ARSceneformController(
             augmentedFaceMode = Config.AugmentedFaceMode.DISABLED
             cloudAnchorMode = Config.CloudAnchorMode.DISABLED
             updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
-            lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
+            lightEstimationMode = Config.LightEstimationMode.DISABLED
             depthMode = Config.DepthMode.DISABLED
             planeFindingMode = Config.PlaneFindingMode.DISABLED
         }
