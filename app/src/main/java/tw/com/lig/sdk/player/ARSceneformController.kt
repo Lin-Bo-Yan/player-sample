@@ -30,6 +30,11 @@ class ARSceneformController(
 
     init {
         sceneView.scene.addOnUpdateListener(this)
+
+        // close plane renderer
+        sceneView?.planeRenderer?.isVisible = false
+        sceneView?.scene?.camera?.nearClipPlane = 0.001f
+        sceneView?.scene?.camera?.farClipPlane = 100f
     }
 
     private fun createARSession(session: Session): Config {
