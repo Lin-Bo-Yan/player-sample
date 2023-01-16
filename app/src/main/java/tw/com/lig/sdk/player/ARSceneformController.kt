@@ -123,7 +123,8 @@ class ARSceneformController(
                     payload.scenes.first().arObjects?.map { arObject -> ArObjectModel(arObject) }
                         ?.let { it1 -> LiGScene(it1) }
 
-                LiGPlayer.context.load(activity,sceneView)
+                LiGPlayer.context.load(activity)
+                LiGPlayer.context.configureSceneView(sceneView)
             }
         }
     }
