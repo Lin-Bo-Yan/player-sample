@@ -9,6 +9,7 @@ import android.widget.TextView
 import tw.com.lig.sdk.scanner.LiGScanner
 import tw.com.lig.sdk.scanner.LightID
 import tw.com.lig.sdk.scanner.ScannerStatusListener
+import tw.com.lig.sdk.scanner.Vector3
 
 class MainActivity: Activity() {
 
@@ -92,9 +93,29 @@ class MainActivity: Activity() {
         LiGScanner.setResultListener { ids ->
             if (ids.isNotEmpty()) {
                 surfaceView?.let {
+
+//                    val lightId = LightID(
+//                        status = 1,
+//                        coordinateX = 10.0f,
+//                        coordinateY = 10.0f,
+//                        isDetected = true,
+//                        deviceId = 123456789L,
+//                        detectionTime = System.currentTimeMillis(),
+//                        decodedTime = System.currentTimeMillis() - 1000,
+//                        isReady = true,
+//                        rotation = Vector3(0.0f, 1.0f, 0.0f),
+//                        translation = Vector3(0.0f, 1.0f, 0.0f),
+//                        position = Vector3(0.0f, 1.0f, 0.0f)
+//                    )
+
                     val lightId = ids[0]
                     it.send(lightId)
-                    runOnUiThread {  updateLightIDMessage(lightId) }
+
+
+                    runOnUiThread {
+                        updateLightIDMessage(lightId)
+                        updateCommandMessage("lightId > $lightId")
+                    }
 
                     if (lightId.isReady && !opened) {
                         opened = true
